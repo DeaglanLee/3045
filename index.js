@@ -1,7 +1,16 @@
 const express = require("express");
+let sessions = require('express-session');
 const app = express();
 const path = require('path');
 const { registerUser } = require("./auth");
+const { error } = require("console");
+
+app.use(sessions({
+    secret: "somethingsecret",
+    saveUninitialized: true,
+    cookie: { maxAge: hour },
+    resave: false
+}))
 
 const port = 3000;
 
