@@ -18,7 +18,7 @@ async function run() {
         created_date: ""
       }
       // Insert the defined document into the "movies" collection
-      const result = await movies.insertOne(doc);
+      const result = await users.insertOne(doc);
       // Print the ID of the inserted document
       console.log(`A document was inserted with the _id: ${result.insertedId}`);
     } finally {
@@ -29,10 +29,12 @@ async function run() {
   // Run the function and handle any errors
   run().catch(console.dir);
 
-export function getUser(username, password) {
+async function usernamePasswordMatches(username, password) {
     
 }
 
-export function registerUser(username, password) {
+async function registerUser(username, password) {
     
 }
+
+export { usernamePasswordMatches, registerUser };
