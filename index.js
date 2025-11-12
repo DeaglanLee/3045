@@ -67,3 +67,20 @@ app.post("/loginUser", async (req, res) => {
 
     res.send(JSON.stringify({ status, message }));
 });
+
+app.post("/sendMessage", async (req, res) => {
+    const { email, prompt, conversationId } = req.body;
+
+    await saveChatToConversation(email, conversationId, prompt);
+
+    const { status, response } = await sendMessageToGemini(prompt);
+
+    if (status !== 200) {
+        res.send(JSON.stringify({ status, message: "Error communicating with Gemini API." }));
+        return;
+    }
+
+    await saveChatToConversation(email, conversationId, response);
+
+    res.send(JSON.stringify({ status, response }));
+});
