@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+let session = require('express-session');
 const path = require('path');
 const { registerUser } = require("./auth");
 const { stat } = require("fs");
@@ -10,6 +11,12 @@ const port = 3000;
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
+app.use(session({
+    secret: 'secretkey',
+    resave: false,
+    saveUninitialized: false, 
+    cookie: { secure: false, maxAge: 3600000 } 
+}));
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
