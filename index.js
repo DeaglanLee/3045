@@ -59,6 +59,8 @@ app.post("/registerUser", async (req, res) => {
     const message = status === 201 ? "Registration successful." : "Registration failed.";
 
     res.send(JSON.stringify({ status, message }));
+});
+
 app.post("/registerUser", async (req, res) => {
     const email = req.body.emailInput;
     const password = req.body.passwordInput;
