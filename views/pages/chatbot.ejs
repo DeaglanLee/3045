@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+  <div class="ChatbotOutside">
+    <div class="ChatbotInside">
+      <div class="ChatInputSection">
+        <input type="text" class="ChatInput" placeholder="Input Box">
+        <button class="ChatSend">Button</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="FooterFixed">
+  <label for="textSize">Text Size:</label>
+  <input type="range" id="textSize" min="12" max="36" value="16">
+
+</div>
+
+<script>
+  const textSizeSlider = document.getElementById("textSize");
+  const chatbot = document.querySelector(".ChatbotOutside");
+
+  textSizeSlider.addEventListener("input", () => {
+    chatbot.style.fontSize = textSizeSlider.value + "px";
+  });
+</script>
+
+</body>
+</html>

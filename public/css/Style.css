@@ -1,4 +1,4 @@
-/* Basic Reset */
+
 * {
   margin: 0;
   padding: 0;
@@ -33,7 +33,7 @@ body {
   color: #0f4c81;
 }
 
-.logo-placeholder {
+.logo{
   text-align: center;
   font-family: Comic 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
@@ -66,16 +66,156 @@ input {
   border-radius: 4px;
 }
 
-button {
+
+
+/* Register + Login Page Buttons */
+
+.RegisterLogin {
   margin-top: 20px;
   padding: 10px;
-  background-color: #ff0400;
+  background-color: #ff0000;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
+
+
 button:hover {
   background-color: #09345c;
+}
+
+
+/* //Register Button Homepage */
+
+.BtnRegister {
+  display: inline-block;
+  padding: 12px 25px;
+  background-color: #f04e4e;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  border-radius: 8px;
+  transition: 0.2s ease;
+  width: 200px;
+  text-align: center;
+}
+
+/* //Login Button Homepage */
+
+.BtnLogin {
+  display: inline-block;
+  padding: 12px 25px;
+  background-color: #8ff04e;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  border-radius: 8px;
+  transition: 0.2s ease;
+  width: 200px;
+  text-align: center;
+}
+
+.btn:hover {
+  background-color: #3a55c9;
+}
+
+
+/* Chatbot page*/
+
+.ChatbotOutside {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ChatbotInside {
+  background: white;
+  width: 90%;
+  max-width: 1000px;
+  height: 600px;
+  border-radius: 25px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.ChatHistoryBox {
+  background: #e6e6e6;
+  flex: 1;                
+  border-radius: 25px;
+  padding: 20px;
+  overflow-y: auto;       
+  box-sizing: border-box;
+  margin-bottom: 90px;   
+}
+
+
+.ChatInputSection {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 20px;
+  background: white;
+  border-radius: 0 0 25px 25px;
+  box-sizing: border-box;
+}
+
+
+.ChatInput {
+  flex: 1;
+  height: 50px;
+  padding: 0 15px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+
+.ChatSend {
+  height: 50px;
+  padding: 0 25px;
+  background: rgb(255, 0, 0);
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;  
+}
+
+
+/* Fixed footer */
+
+.FooterFixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: #500F58;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 15px;
+  z-index: 9999;
+  width: 330px;
+}
+
+#textSize {
+  width: 200px;
 }
