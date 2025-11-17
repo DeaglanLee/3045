@@ -19,8 +19,8 @@ async function registerUser(username, email, plainPassword) {
 
     const doc = { //create user document to insert
       username, 
-      email, 
       hashedPassword,
+      email,
       registeredAt: new Date()
     };
     const result = await users.insertOne(doc); //insert user document into mongodb
