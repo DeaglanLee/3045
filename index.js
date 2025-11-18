@@ -10,7 +10,8 @@ const { isStrongPassword, isValidEmail } = require("./registration/validation");
 
 const port = 3000;
 
-app.use(express.static(path.join(__dirname, '/public')));
+// Middleware
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(session({
@@ -20,26 +21,23 @@ app.use(session({
     cookie: { secure: false, maxAge: 3600000 } 
 }));
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+// GET routes
+app.get('/', (req, res) => {
+    res.render("pages/home", { titledata: "Home" });
 });
 
-// GETS
-app.get('/', async (req, res) => {
-    let title = "Home";
-    res.render("pages/home", { titledata: title })
+app.get('/login', (req, res) => {
+    res.render("pages/login", { titledata: "Login" });
 });
 
-app.get("/login", async (req, res) => {
-    let title = "Login";
-    res.render("pages/login", { titledata: title });
+app.get('/register', (req, res) => {
+    res.render("pages/register", { titledata: "Register" });
 });
 
-app.get("/register", async (req, res) => {
-    let title = "Register";
-    res.render("pages/register", { titledata: title });
-});
-
+// POST routes
+app.post('/register', async (req, res) => {
+    const username = req.body.usernameInput;
+    const password = req.body.passwordInput;
 
 // POSTS
 app.post("/registerUser", async (req, res) => {
