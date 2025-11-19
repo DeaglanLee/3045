@@ -1,14 +1,18 @@
 const express = require("express");
-const app = express();
-let session = require('express-session');
+const session = require('express-session');
 const path = require('path');
-const { registerUser } = require("./auth");
-const { stat } = require("fs");
-const { isStrongPassword, isValidEmail } = require("./registration/validation");
-const { stat } = require("fs");
+
+const { authenticateUser } = require("./database/auth");
+const {
+    saveMessage,
+    getAllConversations,
+    getConversationHistory,
+    createConversation
+} = require("./database/conversations");
 const { isStrongPassword, isValidEmail } = require("./registration/validation");
 
 const port = 3000;
+const app = express();
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
@@ -26,46 +30,17 @@ app.get('/', (req, res) => {
     res.render("pages/home", { titledata: "Home" });
 });
 
-app.get('/login', (req, res) => {
-    res.render("pages/login", { titledata: "Login" });
+// GETS
+app.get('/', async (req, res) => {
+    let title = "Home";
+    res.render("pages/home", { titledata: title });
 });
 
 app.get('/register', (req, res) => {
     res.render("pages/register", { titledata: "Register" });
 });
 
-// POST routes
-app.post('/register', async (req, res) => {
-    const username = req.body.usernameInput;
-    const password = req.body.passwordInput;
-
 // POSTS
-app.post("/registerUser", async (req, res) => {
-    const email = req.body.emailInput;
-    const password = req.body.passwordInput;
-
-    if (!isValidEmail(email)) {
-        res.send(JSON.stringify({
-            status: 400,
-            message: "Invalid email format."
-        }));
-        return;
-    }
-    
-    if (!isStrongPassword(password)) {
-        res.send(JSON.stringify({
-            status: 400,
-            message: "Password is not strong enough."
-        }));
-        return;
-    }
-
-    const { status } = await registerUser(email, password);
-    const message = status === 201 ? "Registration successful." : "Registration failed.";
-
-    res.send(JSON.stringify({ status, message }));
-});
-
 app.post("/registerUser", async (req, res) => {
     const email = req.body.emailInput;
     const password = req.body.passwordInput;
@@ -95,16 +70,20 @@ app.post("/registerUser", async (req, res) => {
 app.post("/loginUser", async (req, res) => {
     const { email, password } = req.body; 
     
-    const { status } = await usernamePasswordMatches(email, password);
-    const message = status === 200 ? "Login successful." : "Login failed.";
+    const authenticated = await authenticateUser(email, password);
+    const message = authenticated ? "Login successful." : "Login failed.";
 
-    res.send(JSON.stringify({ status, message }));
+    res.send(JSON.stringify({ status: 401, message }));
 });
 
 app.post("/sendMessage", async (req, res) => {
     const { email, prompt, conversationId } = req.body;
 
-    await saveChatToConversation(email, conversationId, prompt);
+    const promptId = await saveMessage(email, conversationId, prompt);
+    if (!promptId) {
+        res.send(JSON.stringify({ status: 500, message: "Error saving prompt to database." }));
+        return;
+    }
 
     const { status, response } = await sendMessageToGemini(prompt);
 
@@ -113,7 +92,47 @@ app.post("/sendMessage", async (req, res) => {
         return;
     }
 
-    await saveChatToConversation(email, conversationId, response);
+    const responseId = await saveMessage(email, conversationId, response);
+    if (!responseId) {
+        res.send(JSON.stringify({ status: 500, message: "Error saving response to database." }));
+        return;
+    }
 
     res.send(JSON.stringify({ status, response }));
+});
+
+app.post("/getConversations", async (req, res) => {
+    const { email } = req.body;
+
+    const conversations = await getAllConversations(email);
+    if (!conversations) {
+        res.send(JSON.stringify({ status: 500, message: "Error retrieving conversations." }));
+        return;
+    }
+
+    res.send(JSON.stringify({ status: 200, conversations }));
+});
+
+app.post("/getConversationHistory", async (req, res) => {
+    const { email, conversationId } = req.body;
+
+    const history = await getConversationHistory(email, conversationId);
+    if (!history) {
+        res.send(JSON.stringify({ status: 500, message: "Error retrieving conversation history." }));
+        return;
+    }
+
+    res.send(JSON.stringify({ status: 200, history }));
+});
+
+app.post("/createConversation", async (req, res) => {
+    const { email, conversationName } = req.body;
+
+    const conversationId = await createConversation(email, conversationName);
+    if (!conversationId) {
+        res.send(JSON.stringify({ status: 500, message: "Error creating conversation." }));
+        return;
+    }
+
+    res.send(JSON.stringify({ status: 201, conversationId }));
 });
