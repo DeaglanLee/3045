@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { ObjectId } from "mongodb";
-import { db } from './client';
+import { db } from './client.js';
 
 async function createConversation(userId, title) {
   try {
