@@ -1,49 +1,80 @@
-const express = require("express");
-const session = require('express-session');
-const path = require('path');
+import express from "express";
+import session from "express-session";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const { authenticateUser } = require("./database/auth");
-const {
-    saveMessage,
-    getAllConversations,
-    getConversationHistory,
-    createConversation
-} = require("./database/conversations");
-const { isStrongPassword, isValidEmail } = require("./registration/validation");
+import { authenticateUser, registerUser } from "./database/auth.js";
+import { isStrongPassword, isValidEmail } from "./registration/validation.js";
+import {
+  saveMessage,
+  getAllConversations,
+  getConversationHistory,
+  createConversation,
+} from "./database/conversations.js";
+import { sendMessageToGemini } from "./gemini.js";
 
-const port = 3000;
+
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const port = 3000;
+
 
 // Middleware
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
-app.use(session({
-    secret: 'secretkey',
+app.set("view engine", "ejs");
+app.use(
+  session({
+    secret: "secretkey",
     resave: false,
-    saveUninitialized: false, 
-    cookie: { secure: false, maxAge: 3600000 } 
-}));
+    saveUninitialized: false,
+    cookie: { secure: false, maxAge: 3600000 },
+  })
+);
 
 // GET routes
 app.get('/', (req, res) => {
     res.render("pages/home", { titledata: "Home" });
 });
 
-// GETS
-app.get('/', async (req, res) => {
-    let title = "Home";
-    res.render("pages/home", { titledata: title });
+app.get('/login', (req, res) => {
+    const error = req.session.loginError || null;
+    const oldInput = req.session.oldInput || {};
+
+    req.session.loginError = null;
+    req.session.oldInput = null;
+
+    res.render("pages/login", { titledata: "Login", error, oldInput });
 });
 
 app.get('/register', (req, res) => {
     res.render("pages/register", { titledata: "Register" });
 });
 
+app.get("/chatbot", (req, res) => {
+    console.log("Session User: ", req.session.user);
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+    res.render("pages/chatbot", { titledata: "Chatbot" });
+});
+
+app.get("/logout", async (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Error destroying session:", err);
+        }
+        res.redirect("/login");
+    });
+});
+
+
+
 // POSTS
 app.post("/registerUser", async (req, res) => {
-    const email = req.body.emailInput;
-    const password = req.body.passwordInput;
+    const email = req.body.username;
+    const password = req.body.password;
 
     if (!isValidEmail(email)) {
         res.send(JSON.stringify({
@@ -61,23 +92,39 @@ app.post("/registerUser", async (req, res) => {
         return;
     }
 
-    const { status } = await registerUser(email, password);
-    const message = status === 201 ? "Registration successful." : "Registration failed.";
+    const authenticated = await registerUser(email, password);
+    if (authenticated) {
+        req.session.user = email; // Store user email in session
+        res.redirect("/chatbot");
+        return;
+    }
 
-    res.send(JSON.stringify({ status, message }));
+    res.send(JSON.stringify({ status: 401, message }));
 });
 
 app.post("/loginUser", async (req, res) => {
-    const { email, password } = req.body; 
+    const email = req.body.username;
+    const password = req.body.password;
     
     const authenticated = await authenticateUser(email, password);
     const message = authenticated ? "Login successful." : "Login failed.";
+    if (authenticated) {
+        req.session.user = email;
+        res.redirect("/chatbot");
+        return;
+    }else {
+        req.session.loginError = "Invalid credentials. Please try again.";
+        req.session.oldInput = { username: email };
+
+        res.redirect("/login");
+    }
 
     res.send(JSON.stringify({ status: 401, message }));
 });
 
 app.post("/sendMessage", async (req, res) => {
-    const { email, prompt, conversationId } = req.body;
+    const { prompt, conversationId } = req.body;
+    const email = req.session.user;
 
     const promptId = await saveMessage(email, conversationId, prompt);
     if (!promptId) {
@@ -135,4 +182,9 @@ app.post("/createConversation", async (req, res) => {
     }
 
     res.send(JSON.stringify({ status: 201, conversationId }));
+});
+
+// Start server
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}/`);
 });

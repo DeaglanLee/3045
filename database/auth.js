@@ -1,14 +1,14 @@
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
-import { db } from './client';
+import { db } from './client.js';
+const database = await db();
 
-async function registerUser(username, email, plainPassword) {
+async function registerUser(email, plainPassword) {
   const salt = 10; //reduce dcrypt hash length to 10
-  const users = db().collection("users"); //connect to db and access "users" collection
+  const users = database.collection("users"); //connect to db and access "users" collection
   const hashedPassword = await bcrypt.hash(plainPassword, salt);
 
   const doc = {
-    username, 
     email, 
     hashedPassword,
     registeredAt: new Date()
@@ -16,15 +16,16 @@ async function registerUser(username, email, plainPassword) {
   
   try {
     await users.insertOne(doc);
+    return true;
   } catch (e) {
     console.error('Error inserting user into database', e);
     return false
   }
 }
 
-async function authenticateUser(username, inputPassword) {
-  const users = db().collection("users"); 
-  const findUser = await users.findOne({name: username});
+async function authenticateUser(email, inputPassword) {
+  const users = database.collection("users"); 
+  const findUser = await users.findOne({email: email});
 
   if (!findUser) {
     return false;
