@@ -99,7 +99,7 @@ app.post("/registerUser", async (req, res) => {
         return;
     }
 
-    // res.send(JSON.stringify({ status, message }));
+    res.send(JSON.stringify({ status: 401, message }));
 });
 
 app.post("/loginUser", async (req, res) => {

@@ -1,10 +1,11 @@
 import 'dotenv/config';
 import { ObjectId } from "mongodb";
 import { db } from './client.js';
+const database = await db();
 
 async function createConversation(userId, title) {
   try {
-    const conversations = db().collection("conversations");
+    const conversations = database.collection("conversations");
     const userObjectId = ObjectId.isValid(userId) ? new ObjectId(`${userId}`) : userId;
 
     const doc = {
@@ -22,7 +23,7 @@ async function createConversation(userId, title) {
 }
 
 async function getAllConversations(userId) {
-    const conversations = db().collection("conversations");
+    const conversations = database.collection("conversations");
     const userObjectId = ObjectId.isValid(userId) ? new ObjectId(`${userId}`) : userId;
     
   try {
@@ -38,7 +39,7 @@ async function getAllConversations(userId) {
 }
 
 async function saveMessage(userId, convoId, prompt) {
-    const messages = db().collection("messages");
+    const messages = database.collection("messages");
     const userObjectId = ObjectId.isValid(userId) ? new ObjectId(`${userId}`) : userId;
     const convoObjectId = ObjectId.isValid(convoId) ? new ObjectId(`${convoId}`) : convoId;
     const timestampDate = new Date();
@@ -63,7 +64,7 @@ async function saveMessage(userId, convoId, prompt) {
 }
 
 async function getConversationHistory(userId, convoId) {
-    const messages = db().collection("messages");
+    const messages = database.collection("messages");
     const userObjectId = ObjectId.isValid(userId) ? new ObjectId(`${userId}`) : userId;
     const convoObjectId = ObjectId.isValid(convoId) ? new ObjectId(`${convoId}`) : convoId;
     
