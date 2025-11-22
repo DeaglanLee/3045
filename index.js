@@ -12,6 +12,7 @@ import {
   createConversation,
 } from "./database/conversations.js";
 import { sendMessageToGemini } from "./gemini.js";
+import * as marked from 'marked';
 
 
 const app = express();
@@ -23,6 +24,7 @@ const port = 3000;
 // Middleware
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.set("view engine", "ejs");
 app.use(
   session({
@@ -52,12 +54,30 @@ app.get('/register', (req, res) => {
     res.render("pages/register", { titledata: "Register" });
 });
 
-app.get("/chatbot", (req, res) => {
-    console.log("Session User: ", req.session.user);
+app.get("/chatbot", async (req, res) => {
     if (!req.session.user) {
         return res.redirect("/login");
     }
-    res.render("pages/chatbot", { titledata: "Chatbot" });
+    const conversations = await getAllConversations(req.session.user);
+    
+    res.render("pages/chatbot", { titledata: "Chatbot", messages: [], conversations, conversationId: null });
+});
+
+app.get("/chatbot/:conversationId", async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+    const conversationId = req.params.conversationId;
+
+    if (conversationId == "new") {
+        const newConversationId = await createConversation(req.session.user, Date.now().toString());
+        return res.redirect(`/chatbot/${newConversationId}`);
+    }
+
+    const history = await getConversationHistory(req.session.user, conversationId);
+    const conversations = await getAllConversations(req.session.user);
+
+    res.render("pages/chatbot", { titledata: "Chatbot", messages: history, conversations, conversationId, marked });
 });
 
 app.get("/logout", async (req, res) => {
@@ -126,7 +146,7 @@ app.post("/sendMessage", async (req, res) => {
     const { prompt, conversationId } = req.body;
     const email = req.session.user;
 
-    const promptId = await saveMessage(email, conversationId, prompt);
+    const promptId = await saveMessage(email, conversationId, prompt, false);
     if (!promptId) {
         res.send(JSON.stringify({ status: 500, message: "Error saving prompt to database." }));
         return;
@@ -139,13 +159,13 @@ app.post("/sendMessage", async (req, res) => {
         return;
     }
 
-    const responseId = await saveMessage(email, conversationId, response);
+    const responseId = await saveMessage(email, conversationId, response, true);
     if (!responseId) {
         res.send(JSON.stringify({ status: 500, message: "Error saving response to database." }));
         return;
     }
 
-    res.send(JSON.stringify({ status, response }));
+    res.send(JSON.stringify({ status, reply: response }) );
 });
 
 app.post("/getConversations", async (req, res) => {

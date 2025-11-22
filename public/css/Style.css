@@ -219,3 +219,152 @@ button:hover {
 #textSize {
   width: 200px;
 }
+
+
+.AppWrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.Sidebar {
+    width: 250px;
+    background-color: #fff;
+    color: white;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.NewChatBtn {
+    background-color: #e7e7e7;
+    border: 1px solid #ddd;
+    color: black;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.NewChatBtn:hover {
+    background-color: #ddd;
+}
+
+.ConversationList {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.ConversationItem {
+    background-color: #e7e7e7;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    color: black;
+}
+
+.ConversationItem:hover {
+    background-color: #ddd;
+}
+
+.ConversationEmpty {
+    padding: 10px;
+    color: #bbb;
+    font-style: italic;
+}
+
+.ChatbotOutside {
+    flex: 1;
+}
+
+.ChatMessagesSection {
+    flex: 1;
+    padding: 20px;
+    border-radius: 20px;
+    overflow-y: auto;
+    margin-bottom: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ChatMessage {
+    background: white;
+    padding: 12px 15px;
+    border-radius: 12px;
+    max-width: 80%;
+    width: fit-content;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.ChatMessage span {
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.UserMessage {
+    align-self: flex-end;
+    background: #d2ffd2;
+    border-bottom-right-radius: 4px;
+}
+
+.BotMessage {
+    align-self: flex-start;
+    background: #ffffff;
+    border-bottom-left-radius: 4px;
+}
+
+.BotMessage p {
+    margin: 0 0 12px 0;
+}
+
+.BotMessage h1,
+.BotMessage h2,
+.BotMessage h3,
+.BotMessage h4,
+.BotMessage h5,
+.BotMessage h6 {
+    margin: 16px 0 8px 0;
+    font-weight: bold;
+    line-height: 1.3;
+}
+
+.BotMessage ul,
+.BotMessage ol {
+    margin: 8px 0 12px 20px;
+    padding: 0;
+}
+
+.BotMessage li {
+    margin-bottom: 6px;
+}
+
+.BotMessage code {
+    background-color: #f0f0f0;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.BotMessage pre {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 12px 0;
+    font-family: monospace;
+}
+
+.BotMessage a {
+    color: #1a73e8;
+    text-decoration: underline;
+}
