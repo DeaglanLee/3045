@@ -38,26 +38,23 @@ async function getAllConversations(userId) {
   }
 }
 
-async function saveMessage(userId, convoId, prompt) {
+async function saveMessage(userId, convoId, message, response) {
     const messages = database.collection("messages");
     const userObjectId = ObjectId.isValid(userId) ? new ObjectId(`${userId}`) : userId;
     const convoObjectId = ObjectId.isValid(convoId) ? new ObjectId(`${convoId}`) : convoId;
-    const timestampDate = new Date();
-    const timestampString = `${timestampDate.getHours()}:${timestampDate.getMinutes()}:${timestampDate.getSeconds()}:${timestampDate.getMilliseconds()}`;
 
     const doc = {
       userId: userObjectId,
       conversationId: convoObjectId,
-      timestamp: timestampString,
-      prompt,
-      response: null
+      timestamp: Date.now(),
+      message,
+      is_response: response
     };
 
   try {
     const result = await messages.insertOne(doc);
     return result.insertedId;
-  }
-  catch (e) {
+  } catch (e) {
     console.error(e);
     return null;
   }
@@ -72,11 +69,10 @@ async function getConversationHistory(userId, convoId) {
     const findMsgs = messages.find({
       userId: userObjectId,
       conversationId: convoObjectId
-    }).sort({timestamp: -1}).limit(20);
+    }).sort({timestamp: 1});
 
     return await findMsgs.toArray();
-  }
-  catch (e) {
+  } catch (e) {
     return null;
   }
 }

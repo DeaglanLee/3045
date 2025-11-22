@@ -5,10 +5,13 @@ const gemini = new GoogleGenAI({});
 async function sendMessageToGemini(message) {
     try {
         const response = await gemini.models.generateContent({
-            model: "gemini-1.5-pro",
-            prompt: {
-                text: message,
-            },
+            model: "gemini-2.5-flash",
+            contents: [
+                {
+                    type: "text",
+                    text: message,
+                }
+            ],
         });
         return { status: 200, response: response.text };
     } catch (error) {

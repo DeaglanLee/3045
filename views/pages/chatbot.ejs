@@ -4,28 +4,92 @@
     <%- include('../partials/head') %>
 </head>
 <body>
+  <%- include('../partials/sidebar', { conversations }) %>
   <div class="ChatbotOutside">
-    <div class="ChatbotInside">
-      <div class="ChatInputSection">
-        <input type="text" class="ChatInput" placeholder="Input Box">
-        <button class="ChatSend">Button</button>
+    <% if (conversationId) { %>
+      <div class="ChatbotInside">
+        <div class="ChatMessagesSection">
+          <% messages.forEach(msg => { %>
+            <% if (msg.is_response) { %>
+              <div class="ChatMessage BotMessage">
+                <span><%- marked.parse(msg.message) %></span>
+              </div>
+            <% } else { %>
+              <div class="ChatMessage UserMessage">
+                <span><%- msg.message %></span>
+              </div>
+            <% } %>
+          <% }) %>
+        </div>
+        <div class="ChatInputSection">
+          <input type="text" class="ChatInput" id="text_input" placeholder="Type your message here..." />
+          <button class="ChatSend" onclick="sendMessage('<%= conversationId %>')">Send</button>
+        </div>
       </div>
-    </div>
+    <% } else { %>
+      <div class="NoConversationSelected">
+        <h2>Please select a conversation or start a new chat.</h2>
+      </div>
+    <% } %>
   </div>
 
-  <div class="FooterFixed">
-  <label for="textSize">Text Size:</label>
-  <input type="range" id="textSize" min="12" max="36" value="16">
+  <!-- <div class="FooterFixed">
+    <label for="textSize">Text Size:</label>
+    <input type="range" id="textSize" min="12" max="36" value="16">
+  </div> -->
 
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-  const textSizeSlider = document.getElementById("textSize");
-  const chatbot = document.querySelector(".ChatbotOutside");
+  const chatSection = document.querySelector(".ChatMessagesSection");
 
-  textSizeSlider.addEventListener("input", () => {
-    chatbot.style.fontSize = textSizeSlider.value + "px";
+  window.addEventListener("DOMContentLoaded", () => {
+    if (chatSection) {
+        chatSection.scrollTop = chatSection.scrollHeight;
+    }
   });
+
+  // const textSizeSlider = document.getElementById("textSize");
+  // const chatbot = document.querySelector(".ChatbotOutside");
+
+  // textSizeSlider.addEventListener("input", () => {
+  //   chatbot.style.fontSize = textSizeSlider.value + "px";
+  // });
+
+  async function sendMessage(conversationId) {
+    const input = document.getElementById("text_input");
+    const prompt = input.value;
+    input.value = "";
+    renderMessage(prompt, false);
+
+    // Scroll to bottom
+    chatSection.scrollTop = chatSection.scrollHeight;
+
+    const response = await fetch("http://localhost:3000/sendMessage", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        prompt,
+        conversationId
+      })
+    });
+
+    const json = await response.json();
+
+    renderMessage(json.reply, true);
+
+    // Scroll to bottom
+    chatSection.scrollTop = chatSection.scrollHeight;
+  }
+
+  function renderMessage(msg, isResponse) {
+    const div = document.createElement("div");
+    div.className = "ChatMessage " + (isResponse ? "BotMessage" : "UserMessage");
+    div.innerHTML = marked.parse(msg);
+    chatSection.append(div);
+  }
 </script>
 
 </body>

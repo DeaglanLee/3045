@@ -1,0 +1,25 @@
+<div class="Sidebar">
+    <button class="NewChatBtn" onclick="createNewConversation()">+ New Chat</button>
+
+    <div class="ConversationList">
+        <% if (conversations && conversations.length > 0) { %>
+            <% conversations.forEach(conv => { %>
+                <div class="ConversationItem" onclick="loadConversation('<%= conv._id %>')">
+                    <%= new Date(Number(conv.title)).toLocaleString("en-GB") %>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="ConversationEmpty">No conversations yet</div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+    async function createNewConversation() {
+        window.location.href = "/chatbot/new";
+    }
+
+    async function loadConversation(conversationId) {
+        window.location.href = `/chatbot/${conversationId}`;
+    }
+</script>
