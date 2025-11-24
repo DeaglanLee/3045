@@ -3,12 +3,13 @@ import bcrypt from 'bcrypt';
 import { db } from './client.js';
 const database = await db();
 
-async function registerUser(email, plainPassword) {
+async function registerUser(username, email, plainPassword) {
   const salt = 10; //reduce dcrypt hash length to 10
   const users = database.collection("users"); //connect to db and access "users" collection
   const hashedPassword = await bcrypt.hash(plainPassword, salt);
 
   const doc = {
+    username,
     email, 
     hashedPassword,
     registeredAt: new Date()
