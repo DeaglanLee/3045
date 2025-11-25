@@ -41,13 +41,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    const error = req.session.loginError || null;
-    const oldInput = req.session.oldInput || {};
-
-    req.session.loginError = null;
-    req.session.oldInput = null;
-
-    res.render("pages/login", { titledata: "Login", error, oldInput });
+    res.render("pages/login", { titledata: "Login", error: null, oldInput: null });
 });
 
 app.get('/register', (req, res) => {
@@ -131,10 +125,7 @@ app.post("/loginUser", async (req, res) => {
         res.redirect("/chatbot");
         return;
     } else {
-        req.session.loginError = "Invalid credentials. Please try again.";
-        req.session.oldInput = { username: email };
-
-        res.redirect("/login");
+        res.render("pages/login", { titledata: "Login", error: "Invalid credentials. Please try again.", oldInput: {username: email} } );
     }
 });
 
