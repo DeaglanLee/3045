@@ -51,7 +51,7 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render("pages/register", { titledata: "Register" });
+    res.render("pages/register", { titledata: "Register", error: null });
 });
 
 app.get("/chatbot", async (req, res) => {
@@ -97,30 +97,28 @@ app.post("/registerUser", async (req, res) => {
     const password = req.body.password;
     const username = req.body.username;
 
+    let errorMessage = null;
+
     if (!isValidEmail(email)) {
-        res.send(JSON.stringify({
-            status: 400,
-            message: "Invalid email format."
-        }));
-        return;
+        errorMessage = "Invalid email format.";
     }
     
     if (!isStrongPassword(password)) {
-        res.send(JSON.stringify({
-            status: 400,
-            message: "Password is not strong enough."
-        }));
-        return;
+        errorMessage = "Password is not strong enough.";
     }
 
-    const authenticated = await registerUser(username, email, password);
-    if (authenticated) {
-        req.session.user = email; // Store user email in session
-        res.redirect("/chatbot");
-        return;
+    if (!errorMessage) {
+        const authenticated = await registerUser(username, email, password);
+        if (authenticated) {
+            req.session.user = email; // Store user email in session
+            res.redirect("/chatbot");
+            return;
+        }
+
+        errorMessage = "Username or email already exists.";
     }
 
-    res.send(JSON.stringify({ status: 401, message }));
+    res.render("pages/register", { titledata: "Register", error: errorMessage });
 });
 
 app.post("/loginUser", async (req, res) => {

@@ -54,7 +54,11 @@
           required
         >
 
-        <div id="passwordError" class="error-message"></div>
+        <div id="passwordError" class="error-message">
+          <% if (error) { %>
+            <p><%= error %></p>
+          <% } %>
+        </div>
 
         <button class="RegisterLogin" onclick="validateAndSubmit()" type="button">Register</button>
       </form>

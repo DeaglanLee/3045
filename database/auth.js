@@ -4,6 +4,11 @@ import { db } from './client.js';
 const database = await db();
 
 async function registerUser(username, email, plainPassword) {
+  const userExists = await doesUserExist(username, email);
+  if (userExists) {
+    return false;
+  }
+
   const salt = 10; //reduce dcrypt hash length to 10
   const users = database.collection("users"); //connect to db and access "users" collection
   const hashedPassword = await bcrypt.hash(plainPassword, salt);
@@ -22,6 +27,13 @@ async function registerUser(username, email, plainPassword) {
     console.error('Error inserting user into database', e);
     return false
   }
+}
+
+async function doesUserExist(username, email) {
+  const users = database.collection("users"); 
+  const findUser = await users.findOne({ $or: [ {username: username}, {email: email} ] });
+
+  return findUser !== null;
 }
 
 async function authenticateUser(userId, inputPassword) {
