@@ -38,11 +38,7 @@ async function doesUserExist(username, email) {
 
 async function authenticateUser(userId, inputPassword) {
   const users = database.collection("users"); 
-  let foundUser = await users.findOne({email: userId});
-
-  if (!foundUser) {
-    foundUser = await users.findOne({username: userId});
-  }
+  const foundUser = await users.findOne({ $or: [ {username: userId}, {email: userId} ] });
 
   if (!foundUser) {
     return false;
