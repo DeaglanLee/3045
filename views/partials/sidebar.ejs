@@ -1,26 +1,11 @@
 <div class="Sidebar">
      <div class="SidebarHeader">
-        <% if (user) { %>
-            <div class="UserInfo">
-                <div class="UserAvatar">
-                    <span><%= (user.username || user.name || "U").charAt(0).toUpperCase() %></span>
-                </div>
-                <div class="UserText">
-                    <div class="UserName"><%= user.username || user.name || "User" %></div>
-                    <div class="UserStatus">Online</div>
-                </div>
-            </div>
-        <% } else { %>
-            <div class="UserInfo">
-                <div class="UserText">
-                    <div class="UserName">MindBridge</div>
-                    <div class="UserStatus">Guest</div>
-                </div>
-            </div>
-        <% } %>
+        <div class="SidebarLogo">
+            <img src="/img/Logo.png" width="100" height="60" alt="MindBridge Logo">
+            <h3>MindBridge</h3>
+        </div>
 
-         <button class="NewChatBtn" onclick="createNewConversation()">+ New Chat</button>
-
+        <button class="NewChatBtn" onclick="createNewConversation()">+ New Chat</button>
         <button class="LogoutButton" onclick="logoutUser()">Logout</button>
     </div>
 
@@ -48,9 +33,8 @@
         window.location.href = `/chatbot/${conversationId}`;
     }
 
-     async function logoutUser() {
-    
-            window.location.href = "/logout" 
+    async function logoutUser() {
+        window.location.href = "/logout" 
     }
     
 </script>

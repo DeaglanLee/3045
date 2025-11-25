@@ -24,16 +24,20 @@ async function registerUser(username, email, plainPassword) {
   }
 }
 
-async function authenticateUser(email, inputPassword) {
+async function authenticateUser(userId, inputPassword) {
   const users = database.collection("users"); 
-  const findUser = await users.findOne({email: email});
+  let foundUser = await users.findOne({email: userId});
 
-  if (!findUser) {
+  if (!foundUser) {
+    foundUser = await users.findOne({username: userId});
+  }
+
+  if (!foundUser) {
     return false;
   }
 
   try {
-    return await bcrypt.compare(inputPassword, findUser.hashedPassword);
+    return await bcrypt.compare(inputPassword, foundUser.hashedPassword);
   } catch (e) {
     console.error(e);
     return false

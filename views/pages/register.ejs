@@ -25,7 +25,16 @@
     </div>
 
     <div class="login-box">
-      <form action="/registerUser" method="POST">
+      <form id="form" action="/registerUser" method="POST">
+
+        <label for="username">Email</label>
+        <input 
+          type="text" 
+          id="email" 
+          name="email" 
+          placeholder="Enter email" 
+          required
+        >
 
         <label for="username">Username</label>
         <input 
@@ -47,47 +56,53 @@
 
         <div id="passwordError" class="error-message"></div>
 
-        <button class="RegisterLogin" type="submit">Register</button>
+        <button class="RegisterLogin" onclick="validateAndSubmit()" type="button">Register</button>
       </form>
     </div>
   </div>
 
 <script>
+  const emailInput = document.getElementById("email");
+  const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
   const errorBox = document.getElementById("passwordError");
   const RegisterLogin = document.getElementById("RegisterLogin")
 
-  function validatePassword() {
+  function validateAndSubmit() {
     const password = passwordInput.value;
-    let erros = [];
+    const username = usernameInput.value;
+    const email = emailInput.value;
+    let errors = [];
+
+    if (!email.includes("@") || !email.includes(".")) {
+      errors.push("Please enter a valid email address.");
+    }
+    if (username.length < 3) {
+      errors.push("Username must be at least 3 characters long.");
+    }
 
     if (password.length < 8) {
-      errors.push("Password mus be at least 8 characters long.");
+      errors.push("Password must be at least 8 characters long.");
     }
-    if (!/[A-Z]/.test(password)){
+    if (!/[A-Z]/.test(password)) {
       errors.push ("Password must contain at least one uppercase letter.");
     }
-    if (!/[a-z]/.test(password)){
+    if (!/[a-z]/.test(password)) {
       errors.push("Password must contain at least one lowercase letter.");
     }
-    if(!/[0-9]/.test(password)){
-      erors.push("Password must contain at least one number.")
+    if(!/[0-9]/.test(password)) {
+      errors.push("Password must contain at least one number.")
     }
 
     if (errors.length > 0) {
-      errorBox.innerHTML = erros.join("<br>");
+      errorBox.innerHTML = errors.join("<br>");
       RegisterLogin.disabled = true;
       RegisterLogin.classList.add("disabled-btn");
+      return;
     }
-    else
-    {
-      errorBox.innerHTML - "";
-      RegisterLogin.disabled = false;
-      RegisterLogin.classList.remove("disabled-btn");
-    }
-  }
 
-  passwordInput.addEventListener("Input", validatePassword);
+    document.getElementById("form").submit();
+  }
 </script>
 
 </body>

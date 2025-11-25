@@ -348,37 +348,11 @@ button:hover {
     width: 260px;
     background: #111827;
     color: #f9fafb;
+    height: 100vh;
 }
 
 .SidebarHeader {
     margin-bottom: 16px;
-}
-
-.UserInfo {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.UserAvatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 999px;
-    background: #4b5563;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-    font-weight: 600;
-}
-
-.UserText .UserName {
-    font-weight: 600;
-}
-
-.UserText .UserStatus {
-    font-size: 0.8rem;
-    color: #9ca3af;
 }
 
 .NewChatBtn,
@@ -432,5 +406,14 @@ button:hover {
 }
 
 .ConversationItem:hover {
-    background: #1f2937;
+    background: #bbbbbb;
+}
+
+.SidebarLogo {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  text-align: center;
 }
