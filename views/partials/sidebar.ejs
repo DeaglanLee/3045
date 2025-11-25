@@ -1,5 +1,30 @@
 <div class="Sidebar">
-    <button class="NewChatBtn" onclick="createNewConversation()">+ New Chat</button>
+     <div class="SidebarHeader">
+        <% if (user) { %>
+            <div class="UserInfo">
+                <div class="UserAvatar">
+                    <span><%= (user.username || user.name || "U").charAt(0).toUpperCase() %></span>
+                </div>
+                <div class="UserText">
+                    <div class="UserName"><%= user.username || user.name || "User" %></div>
+                    <div class="UserStatus">Online</div>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="UserInfo">
+                <div class="UserText">
+                    <div class="UserName">MindBridge</div>
+                    <div class="UserStatus">Guest</div>
+                </div>
+            </div>
+        <% } %>
+
+         <button class="NewChatBtn" onclick="createNewConversation()">+ New Chat</button>
+
+        <button class="LogoutButton" onclick="logoutUser()">Logout</button>
+    </div>
+
+    <div class="SidebarSectionTitle">Conversations</div>
 
     <div class="ConversationList">
         <% if (conversations && conversations.length > 0) { %>
@@ -22,4 +47,10 @@
     async function loadConversation(conversationId) {
         window.location.href = `/chatbot/${conversationId}`;
     }
+
+     async function logoutUser() {
+    
+            window.location.href = "/logout" 
+    }
+    
 </script>

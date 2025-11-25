@@ -227,34 +227,6 @@ button:hover {
     height: 100%;
 }
 
-.Sidebar {
-    width: 250px;
-    background-color: #fff;
-    color: white;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    height: 100vh;
-    box-sizing: border-box;
-}
-
-.NewChatBtn {
-    background-color: #e7e7e7;
-    border: 1px solid #ddd;
-    color: black;
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: left;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.NewChatBtn:hover {
-    background-color: #ddd;
-}
-
 .ConversationList {
     flex: 1;
     overflow-y: auto;
@@ -367,4 +339,98 @@ button:hover {
 .BotMessage a {
     color: #1a73e8;
     text-decoration: underline;
+}
+
+.Sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    width: 260px;
+    background: #111827;
+    color: #f9fafb;
+}
+
+.SidebarHeader {
+    margin-bottom: 16px;
+}
+
+.UserInfo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.UserAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: #4b5563;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+.UserText .UserName {
+    font-weight: 600;
+}
+
+.UserText .UserStatus {
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+.NewChatBtn,
+.LogoutButton {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.NewChatBtn {
+    background: #10b981;
+    color: white;
+}
+
+.NewChatBtn:hover {
+    background: #059669;
+}
+
+.LogoutButton {
+    background: #ef4444;
+    color: white;
+}
+
+.LogoutButton:hover {
+    background: #dc2626;
+}
+
+.SidebarSectionTitle {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+    margin: 10px 0 4px;
+}
+
+.ConversationList {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.ConversationItem {
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.ConversationItem:hover {
+    background: #1f2937;
 }
