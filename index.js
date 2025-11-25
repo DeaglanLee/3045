@@ -60,7 +60,7 @@ app.get("/chatbot", async (req, res) => {
     }
     const conversations = await getAllConversations(req.session.user);
     
-    res.render("pages/chatbot", { titledata: "Chatbot", messages: [], conversations, conversationId: null });
+    res.render("pages/chatbot", { titledata: "Chatbot", messages: [], conversations, conversationId: null, user: req.session.user });
 });
 
 app.get("/chatbot/:conversationId", async (req, res) => {
@@ -93,8 +93,9 @@ app.get("/logout", async (req, res) => {
 
 // POSTS
 app.post("/registerUser", async (req, res) => {
-    const email = req.body.username;
+    const email = req.body.email;
     const password = req.body.password;
+    const username = req.body.username;
 
     if (!isValidEmail(email)) {
         res.send(JSON.stringify({
@@ -112,7 +113,7 @@ app.post("/registerUser", async (req, res) => {
         return;
     }
 
-    const authenticated = await registerUser(email, password);
+    const authenticated = await registerUser(username, email, password);
     if (authenticated) {
         req.session.user = email; // Store user email in session
         res.redirect("/chatbot");
@@ -127,19 +128,16 @@ app.post("/loginUser", async (req, res) => {
     const password = req.body.password;
     
     const authenticated = await authenticateUser(email, password);
-    const message = authenticated ? "Login successful." : "Login failed.";
     if (authenticated) {
         req.session.user = email;
         res.redirect("/chatbot");
         return;
-    }else {
+    } else {
         req.session.loginError = "Invalid credentials. Please try again.";
         req.session.oldInput = { username: email };
 
         res.redirect("/login");
     }
-
-    res.send(JSON.stringify({ status: 401, message }));
 });
 
 app.post("/sendMessage", async (req, res) => {

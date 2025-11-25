@@ -1,5 +1,15 @@
 <div class="Sidebar">
-    <button class="NewChatBtn" onclick="createNewConversation()">+ New Chat</button>
+     <div class="SidebarHeader">
+        <div class="SidebarLogo">
+            <img src="/img/Logo.png" width="100" height="60" alt="MindBridge Logo">
+            <h3>MindBridge</h3>
+        </div>
+
+        <button class="NewChatBtn" onclick="createNewConversation()">+ New Chat</button>
+        <button class="LogoutButton" onclick="logoutUser()">Logout</button>
+    </div>
+
+    <div class="SidebarSectionTitle">Conversations</div>
 
     <div class="ConversationList">
         <% if (conversations && conversations.length > 0) { %>
@@ -22,4 +32,9 @@
     async function loadConversation(conversationId) {
         window.location.href = `/chatbot/${conversationId}`;
     }
+
+    async function logoutUser() {
+        window.location.href = "/logout" 
+    }
+    
 </script>
