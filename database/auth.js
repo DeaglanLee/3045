@@ -4,6 +4,11 @@ import { db } from './client.js';
 const database = await db();
 
 async function registerUser(username, email, plainPassword) {
+  const userExists = await doesUserExist(username, email);
+  if (userExists) {
+    return false;
+  }
+
   const salt = 10; //reduce dcrypt hash length to 10
   const users = database.collection("users"); //connect to db and access "users" collection
   const hashedPassword = await bcrypt.hash(plainPassword, salt);
@@ -24,13 +29,16 @@ async function registerUser(username, email, plainPassword) {
   }
 }
 
+async function doesUserExist(username, email) {
+  const users = database.collection("users"); 
+  const findUser = await users.findOne({ $or: [ {username: username}, {email: email} ] });
+
+  return findUser !== null;
+}
+
 async function authenticateUser(userId, inputPassword) {
   const users = database.collection("users"); 
-  let foundUser = await users.findOne({email: userId});
-
-  if (!foundUser) {
-    foundUser = await users.findOne({username: userId});
-  }
+  const foundUser = await users.findOne({ $or: [ {username: userId}, {email: userId} ] });
 
   if (!foundUser) {
     return false;
